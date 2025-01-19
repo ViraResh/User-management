@@ -1,8 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {UserService} from '../../services/user.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {UserFormComponent} from '../user-form/user-form.component';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {
   MatCell,
   MatCellDef,
@@ -13,8 +12,10 @@ import {
   MatTable
 } from '@angular/material/table';
 import {DatePipe, NgForOf} from '@angular/common';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatChip, MatChipSet} from '@angular/material/chips';
+import {MatChip, MatChipSet, MatChipsModule} from '@angular/material/chips';
+import {MatIcon} from '@angular/material/icon';
+import {User} from '../../models/user.interface';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-user-list',
@@ -32,55 +33,62 @@ import {MatChip, MatChipSet} from '@angular/material/chips';
     MatRow,
     MatHeaderRowDef,
     MatRowDef,
-    MatPaginator,
     MatChipSet,
     MatChip,
-    NgForOf
+    NgForOf,
+    MatIcon,
+    MatIconButton,
+    MatChipsModule
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
-export class UserListComponent implements OnInit {
-  @Input() users: any[] = [];
-  displayedColumns: string[] = ['firstName', 'lastName', 'createdAt', 'tags', 'email', 'description', 'actions'];
+export class UserListComponent {
+  @Input() users: User[] = [];
+  @Output() onDelete = new EventEmitter<User>();
+  @Output() onEdit = new EventEmitter<User>();
+  @Output() onAdd = new EventEmitter<User>();
+
+  displayedColumns: string[] = ['firstName', 'lastName', 'createdAt', 'email', 'tags', 'description', 'actions'];
 
   constructor(private dialog: MatDialog) {}
 
-  ngOnInit(): void {}
-
-  openCreateModal(): void {
+  openAddModal(): void {
     const dialogRef = this.dialog.open(UserFormComponent, {
-      width: '400px',
+      width: '770px',
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.users.push(result);
+        this.onAdd.emit(result);
       }
     });
   }
 
-  openEditModal(user: any): void {
+  openEditModal(user: User): void {
     const dialogRef = this.dialog.open(UserFormComponent, {
-      width: '400px',
-      data: user,
+      width: '770px',
+      data: { user, isEditMode: true },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const index = this.users.findIndex((u) => u.id === result.id);
-        if (index !== -1) {
-          this.users[index] = result;
-        }
+        this.onEdit.emit(result);
       }
     });
   }
 
-  deleteUser(user: any): void {
-    const confirmation = confirm('Are you sure you want to delete this user?');
-    if (confirmation) {
-      this.users = this.users.filter((u) => u.id !== user.id);
-    }
-  }
+  deleteUser(user: User): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: 'auto',
+      data: { firstName: user.firstName, lastName: user.lastName },
+    });
 
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.onDelete.emit(user);
+      }
+    });
+  }
 }

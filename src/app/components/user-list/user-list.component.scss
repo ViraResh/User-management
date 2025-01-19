@@ -1,0 +1,71 @@
+@import '../../shared/styles/button.styles.scss';
+
+$border-size: 10px;
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 36px;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+  }
+  table {
+    border-radius: $border-size;
+    border: 1px solid #EEEEEE;
+    th {
+      background: #D3E4FF !important;
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 24px;
+      color: #001C38;
+      &:first-child {
+        border-top-left-radius: $border-size;
+      }
+      &:last-child {
+        border-top-right-radius: $border-size;
+      }
+    }
+    .mat-column-firstName {
+      width: 10%;
+    }
+    .mat-column-lastName {
+      width: 10%;
+    }
+    .mat-column-email {
+      width: 15%;
+    }
+    .mat-column-description {
+      width: 25%;
+    }
+    .mat-column-tags {
+      width: 15%;
+    }
+    .mat-column-createdAt {
+      width: 15%;
+    }
+    .mat-column-actions {
+      width: 10%;
+    }
+    .custom-button {
+      border: 1px solid #A2ADB6;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+
+
+

@@ -1,5 +1,8 @@
 <div class="container">
-  <button mat-raised-button color="primary" (click)="openCreateModal()">Create User</button>
+  <div class="header-container">
+    <h1 class="title">User management</h1>
+    <button mat-raised-button color="primary" class="btn-action" (click)="openAddModal()"><mat-icon>add</mat-icon> Create user</button>
+  </div>
   <table mat-table [dataSource]="users" class="mat-elevation-z8">
     <ng-container matColumnDef="firstName">
       <th mat-header-cell *matHeaderCellDef> First Name </th>
@@ -32,7 +35,6 @@
       </td>
     </ng-container>
 
-
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef> Description </th>
       <td mat-cell *matCellDef="let user"> {{ user.description }} </td>
@@ -41,8 +43,13 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let user">
-        <button mat-button (click)="openEditModal(user)">Edit</button>
-        <button mat-button color="warn" (click)="deleteUser(user)">Delete</button>
+        <button mat-icon-button color="primary" class="custom-button" (click)="openEditModal(user)">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn" class="custom-button" (click)="deleteUser(user)">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
       </td>
     </ng-container>
 
