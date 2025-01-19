@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserListComponent } from '../user-list/user-list.component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { UserService } from '../../services/user.service';
-import {MatCard, MatCardActions, MatCardHeader} from '@angular/material/card';
-import {MatButton} from '@angular/material/button';
+import { HeaderComponent } from '../header/header.component';
+import { User } from '../../models/user.interface';
 
 @Component({
   selector: 'app-home',
@@ -11,36 +11,62 @@ import {MatButton} from '@angular/material/button';
   imports: [
     UserListComponent,
     MatPaginator,
-    MatCard,
-    MatCardHeader,
-    MatCardActions,
-    MatButton
+    HeaderComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  users: any[] = [];
+  users: User[] = [];
   totalUsers = 0;
-  pageSize = 5;
+  pageSize = 10;
   currentPage = 0;
 
   constructor(private userService: UserService) {}
 
-  ngOnInit() {
-    this.loadUsers(); // Завантажуємо користувачів при ініціалізації
-  }
+  ngOnInit(): void {
+    this.userService.loadUsers();
 
-  loadUsers():void {
-    this.userService.getUsers().subscribe((data: any[]) => {
-      this.totalUsers = data.length; // Кількість усіх користувачів
-      this.users = data.slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize); // Лише для поточної сторінки
+    this.userService.getUsers().subscribe((data: User[]) => {
+      this.totalUsers = data.length;
+      this.users = data.slice(
+        this.currentPage * this.pageSize,
+        (this.currentPage + 1) * this.pageSize
+      );
     });
   }
 
-  onPageChange(event: PageEvent) {
+  private loadUsers(): void {
+    this.userService.getUsers().subscribe((data: User[]) => {
+      this.totalUsers = data.length;
+      this.users = data.slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize);
+    });
+  }
+
+  onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadUsers(); // Завантажуємо користувачів для нової сторінки
+    this.loadUsers();
+  }
+
+  handleAdd(newUser: User): void {
+    this.userService.addUser(newUser);
+    this.userService.getUsers().subscribe((data: User[]) => {
+      this.totalUsers = data.length;
+      this.users = data.slice(
+        this.currentPage * this.pageSize,
+        (this.currentPage + 1) * this.pageSize
+      );
+    });
+  }
+
+  handleEdit(updatedUser: User): void {
+    this.userService.editUser(updatedUser);
+    this.loadUsers();
+  }
+
+  handleDelete(updatedUser: User): void {
+    this.userService.deleteUser(updatedUser.email);
+    this.loadUsers();
   }
 }
