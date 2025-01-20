@@ -20,7 +20,7 @@ import { MatButton } from '@angular/material/button';
       <p>Are you sure you want to delete user <span>{{ data.firstName }} {{ data.lastName }}</span>?</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-button class="btn-action-cancel" (click)="onCancel()">Cancel</button>
       <button mat-raised-button color="warn" class="btn-action" (click)="onConfirm()">Delete</button>
     </mat-dialog-actions>
   `,
